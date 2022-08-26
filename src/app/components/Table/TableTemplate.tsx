@@ -1,7 +1,15 @@
-import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
-import { Button, Space, Table, Tag } from 'antd';
-import type { ColumnsType } from 'antd/es/table';
-import React from 'react';
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { Button, Space, Table, Tag } from "antd";
+import type { ColumnsType } from "antd/es/table";
+import React, { useEffect, useState } from "react";
+import { Input } from "antd";
+import { Modal } from "antd";
+import { useAppDispatch, useAppSelector } from "../../hooks";
+import {
+  getStudents,
+  listStudents,
+  loadingStudent,
+} from "../../../features/student/studentSlice";
 
 interface DataType {
   key: string;
@@ -11,104 +19,161 @@ interface DataType {
   id: string;
   username: string;
   password: string;
-  phone:string;
+  phone: string;
   email: string;
-
 }
 
-const columns: ColumnsType<DataType> = [
-  {
-    title: 'ID',
-    dataIndex: 'name',
-    key: 'name',
-    render: text => <a>{text}</a>,
-  },
-  {
-    title: 'MSSV',
-    dataIndex: 'age',
-    key: 'age',
-  },
-  {
-    title: 'Họ và Tên',
-    dataIndex: 'fullname',
-    key: 'address',
-  },
-  {
-    title: 'Username',
-    dataIndex: 'username',
-    key: 'username',
-  },
-  {
-    title: 'Age',
-    dataIndex: 'age',
-    key: 'age',
-  },
-  {
-    title: 'Phone',
-    dataIndex: 'Phone',
-    key: 'Phone',
-  },
-  {
-    title: 'Email',
-    dataIndex: 'Email',
-    key: 'Email',
-  },
-  {
-    title: 'Address',
-    dataIndex: 'Address',
-    key: 'Address',
-  },
-  
-  {
-    title: 'Action',
-    key: 'action',
-    render: (_, record) => (
-      <Space size="middle">
-         <Button className="update-button" type="primary" ><EditOutlined /> </Button>
-         <Button className="delete-button" type="primary" danger><DeleteOutlined /></Button>
-      </Space>
-    ),
-  },
-];
+export function TableTemplate() {
+  const dispatch = useAppDispatch();
+  const listStudent = useAppSelector(listStudents);
+  const loading : boolean = useAppSelector(loadingStudent);
+  //Modal update
+  const [visible, setVisible] = useState(false);
 
-const data: DataType[] = [
-  {
-    
-    key: '1',
-    id: '1001',
-    phone:'09374363272',
-    fullname: 'John Brown',
-    username: 'JohnBrown',
-    password: 'password',
-    age: 32,
-    address: 'New York No. 1 Lake Park',
-    email: 'kieubob123@gmail.com'
+  const showModalUpdate = () => {
+    setVisible(true);
+  };
 
-  },
-  {
-    key: '2',
-    id: '1002',
-    phone:'09374363272',
-    fullname: 'truong le',
-    username: 'truongle',
-    password: 'password',
-    age: 32,
-    address: 'New York No. 1 Lake Park',
-    email: 'kieubob123@gmail.com'
-  },
-  {
-    key: '3',
-    id: '1003',
-    phone:'09374363272',
-    fullname: 'Harry Marguie',
-    username: 'HarryMarguie',
-    password: 'password',
-    age: 32,
-    address: 'New York No. 1 Lake Park',
-    email: 'kieubob123@gmail.com'
-  },
-];
+  const handleUpdateOk = () => {
+    setTimeout(() => {
+      setVisible(false);
+    }, 3000);
+  };
 
-const App: React.FC = () => <Table columns={columns} dataSource={data} />;
+  const handleUpdateCancel = () => {
+    setVisible(false);
+  };
 
-export default App;
+  //Modal delete
+  const [isModalVisible, setIsModalDeleteVisible] = useState(false);
+
+  const showModalDelete = () => {
+    setIsModalDeleteVisible(true);
+  };
+
+  const handleDeleteOk = () => {
+    setIsModalDeleteVisible(false);
+  };
+
+  const handleDeleteCancel = () => {
+    setIsModalDeleteVisible(false);
+  };
+
+  const columns: ColumnsType<DataType> = [
+    // {
+    //   title: "ID",
+    //   dataIndex: "fullname",
+    //   key: "fullname",
+    //   render: (item: any) => <a>{item.fullname}</a>,
+    // },
+    {
+      title: "MSSV",
+      dataIndex: "mssv",
+      key: "mssv",
+    },
+    {
+      title: "Họ và Tên",
+      dataIndex: "fullname",
+      key: "fullname",
+    },
+    {
+      title: "Username",
+      dataIndex: "username",
+      key: "username",
+    },
+    {
+      title: "Age",
+      dataIndex: "age",
+      key: "age",
+    },
+    {
+      title: "Phone",
+      dataIndex: "phone",
+      key: "phone",
+    },
+    {
+      title: "Email",
+      dataIndex: "email",
+      key: "email",
+    },
+    {
+      title: "Address",
+      dataIndex: "address",
+      key: "address",
+    },
+
+    {
+      title: "Action",
+      key: "action",
+      render: (_, record) => (
+        <Space size="middle">
+          <Button
+            className="update-button"
+            type="primary"
+            onClick={showModalUpdate}
+          >
+            <EditOutlined />
+          </Button>
+          <Button
+            className="delete-button"
+            type="primary"
+            danger
+            onClick={showModalDelete}
+          >
+            {" "}
+            <DeleteOutlined />
+          </Button>
+        </Space>
+      ),
+    },
+  ];
+  useEffect(() => {
+    dispatch(getStudents());
+  }, []);
+
+  return (
+    <>
+      <Table columns={columns} dataSource={listStudent} />;
+      <Modal
+        visible={visible}
+        title="Cập nhật thông tin Sinh Viên"
+        onOk={handleUpdateOk}
+        onCancel={handleUpdateCancel}
+        footer={[
+          <Button key="back" onClick={handleUpdateCancel}>
+            Cancel
+          </Button>,
+          <Button
+            key="submit"
+            type="primary"
+            loading={loading}
+            onClick={handleUpdateOk}
+          >
+            Submit
+          </Button>,
+        ]}
+      >
+        <div className="input-field">
+          <Input placeholder="Fullname" />
+          <Input placeholder="Age" />
+          <Input placeholder="MSSV" />
+          <Input disabled placeholder="Username" />
+          
+          <Input placeholder="Phone" />
+          <Input placeholder="Email" />
+          <Input placeholder="Address" />
+        </div>
+      </Modal>
+      <Modal
+        title="Xóa Sinh Viên"
+        visible={isModalVisible}
+        onOk={handleDeleteOk}
+        onCancel={handleDeleteCancel}
+      >
+        <p>Bạn muốn xóa sinh viên này không</p>
+      </Modal>
+    </>
+  );
+}
+
+export default TableTemplate;

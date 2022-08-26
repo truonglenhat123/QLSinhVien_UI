@@ -44,7 +44,6 @@ function getItem(
 
 const items: MenuItem[] = [
   getItem("Trang Chủ", "1", <PieChartOutlined />),
-  getItem("Thông Tin Sinh Viên", "2", <DesktopOutlined />),
   getItem("Quản Lý Sinh Viên", "3", <UserOutlined />),
   getItem(
     "Team",
@@ -117,8 +116,8 @@ function Template() {
             <Row className="row-content">
               <Col span={18} className="col-content">
                 <Breadcrumb style={{ margin: "16px 0" }}>
-                  <Breadcrumb.Item>User</Breadcrumb.Item>
-                  <Breadcrumb.Item>Bill</Breadcrumb.Item>
+                  <Breadcrumb.Item>HomePage</Breadcrumb.Item>
+                  <Breadcrumb.Item>StudentsManagerments</Breadcrumb.Item>
                 </Breadcrumb>
               </Col>
               <Col span={6} className="col-content-button">
@@ -136,7 +135,7 @@ function Template() {
             </div>
           </Content>
           <Footer style={{ textAlign: "center" }}>
-            Ant Design ©2018 Created by Ant UED
+            <p>aa </p>
           </Footer>
         </Layout>
       </Layout>
