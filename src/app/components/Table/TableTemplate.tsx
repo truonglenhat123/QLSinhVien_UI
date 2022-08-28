@@ -6,6 +6,7 @@ import { Input } from "antd";
 import { Modal } from "antd";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import {
+  createStudent,
   getStudents,
   listStudents,
   loadingStudent,

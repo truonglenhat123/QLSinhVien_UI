@@ -1,4 +1,5 @@
 import {
+  DatabaseTwoTone,
   DesktopOutlined,
   FileOutlined,
   PieChartOutlined,
@@ -12,9 +13,12 @@ import { Input, Space } from "antd";
 import { AudioOutlined } from "@ant-design/icons";
 import "./Template.scss";
 import { Col, Row } from "antd";
-import TableTemplate from "./Table/TableTemplate";
+import TableTemplate from "../Table/TableTemplate";
 import { Avatar, Image } from "antd";
 import { Button, Modal } from "antd";
+import { useAppDispatch, useAppSelector } from "../../hooks";
+import { createStudent, listStudents, loadingStudent } from "../../../features/student/studentSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 const { Header, Content, Footer, Sider } = Layout;
 type MenuItem = Required<MenuProps>["items"][number];
@@ -41,7 +45,6 @@ function getItem(
     label,
   } as MenuItem;
 }
-
 const items: MenuItem[] = [
   getItem("Trang Chủ", "1", <PieChartOutlined />),
   getItem("Quản Lý Sinh Viên", "3", <UserOutlined />),
@@ -56,17 +59,35 @@ const items: MenuItem[] = [
 ];
 
 function Template() {
+  const listStudent = useAppSelector(listStudents);
+  const loading : boolean = useAppSelector(loadingStudent);
+
+  const dispatch = useAppDispatch();
+  const [studentStages,setStudentStages] = useState(
+    {
+      fullname: '',
+      age: 0,
+      mssv:'',
+      address: '',
+      username: '',
+      password: '',
+      phone: '',
+      email: '',
+    }
+  )
+  const addNewStudent = () => {
+    dispatch(createStudent(studentStages))
+  }
+
+
   const [collapsed, setCollapsed] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [visible, setVisible] = useState(false);
   const showModal = () => {
     setVisible(true);
   };
 
   const handleOk = () => {
-    setLoading(true);
     setTimeout(() => {
-      setLoading(false);
       setVisible(false);
     }, 3000);
   };
@@ -152,21 +173,21 @@ function Template() {
             key="submit"
             type="primary"
             loading={loading}
-            onClick={handleOk}
+            onClick={addNewStudent}
           >
             Submit
           </Button>,
         ]}
       >
         <div className="input-field">
-          <Input placeholder="Fullname" />
-          <Input placeholder="Age" />
-          <Input placeholder="MSSV" />
-          <Input placeholder="Username" />
-          <Input placeholder="Password" />
-          <Input placeholder="Phone" />
-          <Input placeholder="Email" />
-          <Input placeholder="Address" />
+          <Input placeholder="Fullname" onChange={(e)=> setStudentStages({...studentStages, fullname: e.target.value }) } />
+          <Input placeholder="Age" onChange={(e)=> setStudentStages({...studentStages, age: Number(e.target.value) }) } />
+          <Input placeholder="MSSV" onChange={(e)=> setStudentStages({...studentStages, mssv: e.target.value }) } />
+          <Input placeholder="Username" onChange={(e)=> setStudentStages({...studentStages, username: e.target.value }) } />
+          <Input placeholder="Password" onChange={(e)=> setStudentStages({...studentStages, password: e.target.value }) } />
+          <Input placeholder="Phone"  onChange={(e)=> setStudentStages({...studentStages, phone: e.target.value }) }/>
+          <Input placeholder="Email" onChange={(e)=> setStudentStages({...studentStages, email: e.target.value }) } />
+          <Input placeholder="Address"  onChange={(e)=> setStudentStages({...studentStages, address: e.target.value }) }/>
         </div>
       </Modal>
     </>
