@@ -17,7 +17,7 @@ import TableTemplate from "../Table/TableTemplate";
 import { Avatar, Image } from "antd";
 import { Button, Modal } from "antd";
 import { useAppDispatch, useAppSelector } from "../../hooks";
-import { createStudent, listStudents, loadingStudent } from "../../../features/student/studentSlice";
+import { createStudent, getStudents, listStudents, loadingStudent } from "../../../features/student/studentSlice";
 import { useDispatch, useSelector } from "react-redux";
 
 const { Header, Content, Footer, Sider } = Layout;
@@ -67,7 +67,7 @@ function Template() {
     {
       fullname: '',
       age: 0,
-      mssv:'',
+      mssv:0,
       address: '',
       username: '',
       password: '',
@@ -75,8 +75,13 @@ function Template() {
       email: '',
     }
   )
-  const addNewStudent = () => {
-    dispatch(createStudent(studentStages))
+  const addNewStudent = async () => {
+    try {
+    await  dispatch(createStudent(studentStages))
+    await  dispatch(getStudents())
+    } catch (error) {
+      
+    }
   }
 
 
@@ -137,8 +142,8 @@ function Template() {
             <Row className="row-content">
               <Col span={18} className="col-content">
                 <Breadcrumb style={{ margin: "16px 0" }}>
-                  <Breadcrumb.Item>HomePage</Breadcrumb.Item>
-                  <Breadcrumb.Item>StudentsManagerments</Breadcrumb.Item>
+                  <Breadcrumb.Item></Breadcrumb.Item>
+                  <Breadcrumb.Item></Breadcrumb.Item>
                 </Breadcrumb>
               </Col>
               <Col span={6} className="col-content-button">
@@ -156,7 +161,7 @@ function Template() {
             </div>
           </Content>
           <Footer style={{ textAlign: "center" }}>
-            <p>aa </p>
+            <p>footer </p>
           </Footer>
         </Layout>
       </Layout>
@@ -182,7 +187,7 @@ function Template() {
         <div className="input-field">
           <Input placeholder="Fullname" onChange={(e)=> setStudentStages({...studentStages, fullname: e.target.value }) } />
           <Input placeholder="Age" onChange={(e)=> setStudentStages({...studentStages, age: Number(e.target.value) }) } />
-          <Input placeholder="MSSV" onChange={(e)=> setStudentStages({...studentStages, mssv: e.target.value }) } />
+          <Input placeholder="MSSV" onChange={(e)=> setStudentStages({...studentStages, mssv: Number(e.target.value )}) } />
           <Input placeholder="Username" onChange={(e)=> setStudentStages({...studentStages, username: e.target.value }) } />
           <Input placeholder="Password" onChange={(e)=> setStudentStages({...studentStages, password: e.target.value }) } />
           <Input placeholder="Phone"  onChange={(e)=> setStudentStages({...studentStages, phone: e.target.value }) }/>

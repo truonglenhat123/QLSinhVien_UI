@@ -5,9 +5,9 @@ export const getAll = async ():Promise<any[]> => {
   return result as any;
 };
 
-export const getById = async (id: number):Promise<any[]> => {
+export const getById = async (id: number):Promise<any> => {
   // eslint-disable-next-line no-template-curly-in-string
-  const result = await axiosClient.get<StudentState>(`/student/${id}`);
+  const result = await axiosClient.get(`/student/${id}`);
   return result as any;
 };
 
@@ -17,13 +17,13 @@ export const create = async (data: any[]):Promise<any[]> => {
   return result as any;
 };
 
-export const update = async (id:number,data: any[]):Promise<any[]> => {
+export const update = async (id:number,data: any):Promise<any[]> => {
   // eslint-disable-next-line no-template-curly-in-string
   const result = await axiosClient.put(`/student/${id}`,data);
   return result as any;
 };
 
-export const remove = async (id:any):Promise<any[]> => {
+export const remove = async (id:number):Promise<any[]> => {
   // eslint-disable-next-line no-template-curly-in-string
   const result = await axiosClient.delete<any>(`/student/${id}`,);
   return result as any;

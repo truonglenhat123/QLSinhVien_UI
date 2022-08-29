@@ -7,10 +7,15 @@ import { Modal } from "antd";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import {
   createStudent,
+  deleteStudent,
   getStudents,
+  getStudentsById,
   listStudents,
   loadingStudent,
+  studentData,
+  updateStudent,
 } from "../../../features/student/studentSlice";
+import { getById } from "../../../api/studentClient";
 
 interface DataType {
   key: string;
@@ -27,19 +32,44 @@ interface DataType {
 export function TableTemplate() {
   const dispatch = useAppDispatch();
   const listStudent = useAppSelector(listStudents);
-  const loading : boolean = useAppSelector(loadingStudent);
+
+  const DATA = useAppSelector(studentData);
+  const loading: boolean = useAppSelector(loadingStudent);
   //Modal update
   const [visible, setVisible] = useState(false);
 
-  const showModalUpdate = () => {
+  const [student, setstudent] = useState({
+    fullname: "",
+    phone: "",
+    age: 0,
+    username: "",
+    password: "",
+    address: "",
+    email: "",
+    mssv: 0,
+  });
+
+  const showModalUpdate = async (id: number) => {
+    dispatch(getStudentsById(id));
     setVisible(true);
   };
-
-  const handleUpdateOk = () => {
+  const handleUpdateOk = async () => {
+    try {
+      await  dispatch(updateStudent({id:DATA!?.id as number,data:student}))
+      await  dispatch(getStudents())
+      } catch (error) {
+        
+      }
     setTimeout(() => {
       setVisible(false);
     }, 3000);
   };
+  useEffect(() => {
+    if (DATA) {
+      // debugger
+      setstudent({...DATA});
+    }
+  }, [DATA]);
 
   const handleUpdateCancel = () => {
     setVisible(false);
@@ -48,13 +78,17 @@ export function TableTemplate() {
   //Modal delete
   const [isModalVisible, setIsModalDeleteVisible] = useState(false);
 
-  const showModalDelete = () => {
+  const showModalDelete = (id: number) =>{
+    dispatch(getStudentsById(id));
     setIsModalDeleteVisible(true);
   };
 
   const handleDeleteOk = () => {
+    dispatch(deleteStudent(DATA!.id))
     setIsModalDeleteVisible(false);
   };
+
+
 
   const handleDeleteCancel = () => {
     setIsModalDeleteVisible(false);
@@ -106,12 +140,12 @@ export function TableTemplate() {
     {
       title: "Action",
       key: "action",
-      render: (_, record) => (
+      render: (_, record: any) => (
         <Space size="middle">
           <Button
             className="update-button"
             type="primary"
-            onClick={showModalUpdate}
+            onClick={() => showModalUpdate(record.id)}
           >
             <EditOutlined />
           </Button>
@@ -119,7 +153,7 @@ export function TableTemplate() {
             className="delete-button"
             type="primary"
             danger
-            onClick={showModalDelete}
+            onClick={() => showModalDelete(record.id)}
           >
             {" "}
             <DeleteOutlined />
@@ -134,7 +168,7 @@ export function TableTemplate() {
 
   return (
     <>
-      <Table columns={columns} dataSource={listStudent} />;
+      <Table columns={columns} dataSource={listStudent} />
       <Modal
         visible={visible}
         title="Cập nhật thông tin Sinh Viên"
@@ -155,14 +189,60 @@ export function TableTemplate() {
         ]}
       >
         <div className="input-field">
-          <Input placeholder="Fullname" />
-          <Input placeholder="Age" />
-          <Input placeholder="MSSV" />
-          <Input disabled placeholder="Username" />
-          
-          <Input placeholder="Phone" />
-          <Input placeholder="Email" />
-          <Input placeholder="Address" />
+          <Input
+            value={student.fullname}
+            placeholder="Fullname"
+            onChange={(e) =>
+              setstudent({ ...student, fullname: e.target.value })
+            }
+          />
+          <Input
+          value={student.age}
+            placeholder="Age"
+            onChange={(e) =>
+              setstudent({ ...student, age: Number(e.target.value) })
+            }
+          />
+          <Input
+           value={student.mssv}
+            placeholder="MSSV"
+            onChange={(e) =>
+              setstudent({ ...student, mssv: Number(e.target.value) })
+            }
+          />
+          <Input
+          value={student.username}
+            disabled
+            placeholder="Username"
+            onChange={(e) =>
+              setstudent({ ...student, username: e.target.value })
+            }
+          />
+          <Input
+          value={student.password}
+            placeholder="Password"
+            type="password"
+            onChange={(e) =>
+              setstudent({ ...student, password: e.target.value })
+            }
+          />
+          <Input
+          value={student.phone}
+            placeholder="Phone"
+            onChange={(e) => setstudent({ ...student, phone: e.target.value })}
+          />
+          <Input
+          value={student.email}
+            placeholder="Email"
+            onChange={(e) => setstudent({ ...student, email: e.target.value })}
+          />
+          <Input
+          value={student.address}
+            placeholder="Address"
+            onChange={(e) =>
+              setstudent({ ...student, address: e.target.value })
+            }
+          />
         </div>
       </Modal>
       <Modal
