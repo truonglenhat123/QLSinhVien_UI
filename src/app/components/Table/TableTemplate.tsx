@@ -55,19 +55,17 @@ export function TableTemplate() {
   };
   const handleUpdateOk = async () => {
     try {
-      await  dispatch(updateStudent({id:DATA!?.id as number,data:student}))
-      await  dispatch(getStudents())
-      } catch (error) {
-        
-      }
+      await dispatch(updateStudent({ id: DATA!?.id as number, data: student }));
+      await dispatch(getStudents());
+    } catch (error) {}
     setTimeout(() => {
       setVisible(false);
-    }, 3000);
+    }, 500);
   };
   useEffect(() => {
     if (DATA) {
       // debugger
-      setstudent({...DATA});
+      setstudent({ ...DATA });
     }
   }, [DATA]);
 
@@ -78,17 +76,18 @@ export function TableTemplate() {
   //Modal delete
   const [isModalVisible, setIsModalDeleteVisible] = useState(false);
 
-  const showModalDelete = (id: number) =>{
+  const showModalDelete = (id: number) => {
     dispatch(getStudentsById(id));
     setIsModalDeleteVisible(true);
   };
 
-  const handleDeleteOk = () => {
-    dispatch(deleteStudent(DATA!.id))
-    setIsModalDeleteVisible(false);
+  const handleDeleteOk = async () => {
+    try {
+      await dispatch(deleteStudent(DATA!.id));
+      await dispatch(getStudents());
+      setIsModalDeleteVisible(false);
+    } catch (error) {}
   };
-
-
 
   const handleDeleteCancel = () => {
     setIsModalDeleteVisible(false);
@@ -197,21 +196,21 @@ export function TableTemplate() {
             }
           />
           <Input
-          value={student.age}
+            value={student.age}
             placeholder="Age"
             onChange={(e) =>
               setstudent({ ...student, age: Number(e.target.value) })
             }
           />
           <Input
-           value={student.mssv}
+            value={student.mssv}
             placeholder="MSSV"
             onChange={(e) =>
               setstudent({ ...student, mssv: Number(e.target.value) })
             }
           />
           <Input
-          value={student.username}
+            value={student.username}
             disabled
             placeholder="Username"
             onChange={(e) =>
@@ -219,7 +218,7 @@ export function TableTemplate() {
             }
           />
           <Input
-          value={student.password}
+            value={student.password}
             placeholder="Password"
             type="password"
             onChange={(e) =>
@@ -227,17 +226,17 @@ export function TableTemplate() {
             }
           />
           <Input
-          value={student.phone}
+            value={student.phone}
             placeholder="Phone"
             onChange={(e) => setstudent({ ...student, phone: e.target.value })}
           />
           <Input
-          value={student.email}
+            value={student.email}
             placeholder="Email"
             onChange={(e) => setstudent({ ...student, email: e.target.value })}
           />
           <Input
-          value={student.address}
+            value={student.address}
             placeholder="Address"
             onChange={(e) =>
               setstudent({ ...student, address: e.target.value })
